@@ -19,7 +19,7 @@ class PQText extends StatelessWidget {
   Widget build(BuildContext context) {
     if (!validValue)
       return const Text('n.a.');
-
+try{
     switch (pq) {
       case PQ.dateTime:
         return Text(DateFormat(formatString).format(value as DateTime));
@@ -28,6 +28,7 @@ class PQText extends StatelessWidget {
       case PQ.power:
         return Text((value as num).toStringAsPrecision(3) + ' W');
       case PQ.paceFromSpeed:
+        if(value==0.0) return Text('0:00 /km');
         final double totalSeconds = 1000 / (value as double);
         final int minutes = (totalSeconds / 60).floor();
         final String seconds =
@@ -87,6 +88,9 @@ class PQText extends StatelessWidget {
       case PQ.double:
         return Text((value as double).toStringAsPrecision(3));
     }
+}catch(e){
+  print('$pq -> {e.toString()}');
+}
     return const Text(
         'the pq Parameter was not provided.'); // just to silence the dart analyzer
   }

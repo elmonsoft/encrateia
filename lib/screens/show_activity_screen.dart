@@ -3,6 +3,7 @@ import 'package:encrateia/models/weight.dart';
 import 'package:encrateia/utils/my_color.dart';
 import 'package:encrateia/widgets/activity_widgets/activity_bargraph_widget.dart';
 import 'package:encrateia/widgets/activity_widgets/activity_ftp_widget.dart';
+import 'package:encrateia/widgets/activity_widgets/activity_path_osm_widget.dart';
 import 'package:encrateia/widgets/activity_widgets/activity_speed_widget.dart';
 import 'package:encrateia/widgets/activity_widgets/activity_metadata_widget.dart';
 import 'package:encrateia/widgets/activity_widgets/activity_overview_widget.dart';
@@ -13,6 +14,8 @@ import 'package:encrateia/widgets/activity_widgets/activity_speed_per_heart_rate
 import 'package:encrateia/widgets/activity_widgets/activity_tag_widget.dart';
 import 'package:encrateia/widgets/intervals_list_widget.dart';
 import 'package:encrateia/widgets/activity_widgets/activity_work_widget.dart';
+import 'package:encrateia/widgets/laps_list_extend_widget.dart';
+import 'package:encrateia/widgets/laps_list_simple_widget.dart';
 import 'package:encrateia/widgets/laps_list_widget.dart';
 import 'package:encrateia/widgets/activity_widgets/activity_heart_rate_widget.dart';
 import 'package:encrateia/widgets/activity_widgets/activity_path_widget.dart';
@@ -77,12 +80,24 @@ class _ShowActivityScreenState extends State<ShowActivityScreen> {
       ),
       if (widget.activity.cachedLaps.isNotEmpty)
         navigationButton(
-          title: 'Laps List',
+          title: 'Laps List simple',
           color: MyColor.lap,
           backgroundColor: MyColor.lap,
           icon: MyIcon.laps,
           context: context,
-          nextWidget: LapsListWidget(
+          nextWidget: LapsListSimpleWidget(
+            activity: widget.activity,
+            athlete: widget.athlete,
+          ),
+        ),
+      if (widget.activity.cachedLaps.isNotEmpty)
+        navigationButton(
+          title: 'Laps List Extend',
+          color: MyColor.lap,
+          backgroundColor: MyColor.lap,
+          icon: MyIcon.laps,
+          context: context,
+          nextWidget: LapsListExtendWidget(
             activity: widget.activity,
             athlete: widget.athlete,
           ),
@@ -99,6 +114,19 @@ class _ShowActivityScreenState extends State<ShowActivityScreen> {
             athlete: widget.athlete,
           ),
         ),
+      if(widget.activity.startPositionLat.toWGS84()<89.0 &&  widget.activity.startPositionLong.toWGS84()<179.0)
+      navigationButton(
+        title: 'OpenStreetMap',
+        color: MyColor.navigate,
+        backgroundColor: MyColor.navigate,
+        icon: MyIcon.map,
+        context: context,
+        nextWidget: ActivityPathOsmWidget(
+          activity: widget.activity,
+          athlete: widget.athlete,
+        ),
+      ),
+      /*
       navigationButton(
         title: 'Path',
         color: MyColor.navigate,
@@ -110,6 +138,7 @@ class _ShowActivityScreenState extends State<ShowActivityScreen> {
           athlete: widget.athlete,
         ),
       ),
+       */
       if (widget.activity.heartRateAvailable)
         navigationButton(
           title: 'Heart Rate',
@@ -188,7 +217,7 @@ class _ShowActivityScreenState extends State<ShowActivityScreen> {
             athlete: widget.athlete,
           ),
         ),
-      if (widget.activity.speedAvailable)
+      if (widget.activity.speedAvailable && widget.activity.heartRateAvailable)
         navigationButton(
           title: 'Speed / Heart Rate',
           color: MyColor.navigate,
@@ -298,6 +327,7 @@ class _ShowActivityScreenState extends State<ShowActivityScreen> {
             athlete: widget.athlete,
           ),
         ),
+      if (widget.activity.speedAvailable)
       navigationButton(
         title: 'Altitude',
         color: MyColor.navigate,

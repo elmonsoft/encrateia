@@ -14,7 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:encrateia/models/athlete.dart';
 import 'package:encrateia/models/heart_rate_zone_schema.dart';
 import 'package:sqfentity_gen/sqfentity_gen.dart';
-
+import 'package:encrateia/utils/lauf_metriken.dart';
 import 'bar_zone.dart';
 
 class Lap {
@@ -24,6 +24,7 @@ class Lap {
 
   Lap._fromDb(this._db);
 
+  Metriken lm = Metriken();
   DbLap _db;
   Activity activity;
   int index;
