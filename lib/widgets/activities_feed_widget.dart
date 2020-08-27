@@ -76,8 +76,11 @@ class _ActivitiesFeedWidgetState extends State<ActivitiesFeedWidget> {
                     ]),
                     const SizedBox(width: 20),
                     Column(children: <Widget>[
-                      PQText(pq: paceOrSpeed(sport: activity.sport), value: activity.avgSpeed),
-                      PQText(pq: PQ.movingTime, value: activity.movingDuration())
+                      PQText(
+                          pq: paceOrSpeed(sport: activity.sport),
+                          value: activity.avgSpeed),
+                      PQText(
+                          pq: PQ.movingTime, value: activity.movingDuration())
                     ]),
                     const SizedBox(width: 20),
                     Column(
@@ -86,14 +89,11 @@ class _ActivitiesFeedWidgetState extends State<ActivitiesFeedWidget> {
                           pq: PQ.power,
                           value: activity.avgPower,
                         ),
-PQText(
+                        PQText(
                           pq: PQ.heartRate,
                           value: activity.avgHeartRate,
                         ),
-                        PQText(
-                          pq: PQ.ecor,
-                          value: activity.cachedEcor,
-                        ),
+                        //PQText(pq: PQ.ecor,value: activity.cachedEcor,),
                       ],
                     )
                   ],
@@ -172,8 +172,7 @@ PQText(
     for (final Activity activity in activities) {
       await activity.tags;
       await activity.ecor;
-      if (disposed)
-        break;
+      if (disposed) break;
       setState(() {});
     }
   }

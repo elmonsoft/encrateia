@@ -204,7 +204,7 @@ class _LapsListExtendWidgetState extends State<LapsListExtendWidget> {
       athletesId: widget.athlete.id,
       date: widget.activity.timeCreated,
     );
-    widget.activity.weight = weight.value ?? 0.0;
+    widget.activity.cachedWeight = weight.value ?? 0.0;
 
     // Power - FTP
     PowerZoneSchema powerZoneSchema = await PowerZoneSchema.getBy(
@@ -221,7 +221,7 @@ class _LapsListExtendWidgetState extends State<LapsListExtendWidget> {
     );
     heartRateBase = heartRateZoneSchema.base.toString() ?? '';
 
-    double dweight = widget.activity.weight;
+    double dweight = await widget.activity.weight;
     //print('Base: $dweight kg / $powerFTP Watt / $heartRateBase bpm ');
 
     // pace FTP
