@@ -73,14 +73,12 @@ class _ActivitiesFeedWidgetState extends State<ActivitiesFeedWidget> {
                         pq: PQ.distance,
                         value: activity.totalDistance,
                       ),
+
                     ]),
                     const SizedBox(width: 20),
                     Column(children: <Widget>[
-                      PQText(pq: PQ.paceFromSpeed, value: activity.avgSpeed),
-                      PQText(
-                        pq: PQ.heartRate,
-                        value: activity.avgHeartRate,
-                      ),
+                      PQText(pq: paceOrSpeed(sport: activity.sport), value: activity.avgSpeed),
+                      PQText(pq: PQ.movingTime, value: activity.movingDuration())
                     ]),
                     const SizedBox(width: 20),
                     Column(
@@ -89,7 +87,10 @@ class _ActivitiesFeedWidgetState extends State<ActivitiesFeedWidget> {
                           pq: PQ.power,
                           value: activity.avgPower,
                         ),
-                        const Text('')
+                        PQText(
+                          pq: PQ.heartRate,
+                          value: activity.avgHeartRate,
+                        ),
                       ],
                     )
                   ],
@@ -139,6 +140,17 @@ class _ActivitiesFeedWidgetState extends State<ActivitiesFeedWidget> {
     );
   }
 
+  PQ paceOrSpeed({String sport}) {
+    switch (sport) {
+      case 'running':
+        return PQ.paceFromSpeed;
+      case 'cycling':
+        return PQ.speed;
+      default:
+        return PQ.paceFromSpeed;
+    }
+  }
+
   Icon sportsIcon({String sport}) {
     switch (sport) {
       case 'running':
@@ -156,8 +168,7 @@ class _ActivitiesFeedWidgetState extends State<ActivitiesFeedWidget> {
     tagGroups = await TagGroup.allByAthlete(athlete: widget.athlete);
     for (final Activity activity in activities) {
       await activity.tags;
-      if (disposed)
-        break;
+      if (disposed) break;
       setState(() {});
     }
   }
