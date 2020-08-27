@@ -131,6 +131,87 @@ class TagGroup {
     }
   }
 
+  static Future<TagGroup> autoMaxPowerTagGroup(
+      {@required Athlete athlete}) async {
+    final DbTagGroup dbTagGroup = await DbTagGroup()
+        .select()
+        .system
+        .equals(true)
+        .and
+        .athletesId
+        .equals(athlete.id)
+        .and
+        .name
+        .equals('Auto Power Max Zone')
+        .toSingle();
+    if (dbTagGroup != null) {
+      return TagGroup._fromDb(dbTagGroup);
+    } else {
+      final TagGroup autoMaxPowerTagGroup = TagGroup.by(
+        name: 'Auto Power Max Zone',
+        athlete: athlete,
+        system: true,
+        color: MyColor.bitterSweet.value,
+      );
+      await autoMaxPowerTagGroup._db.save();
+      return autoMaxPowerTagGroup;
+    }
+  }
+
+  static Future<TagGroup> autoMaxHeartRateTagGroup(
+      {@required Athlete athlete}) async {
+    final DbTagGroup dbTagGroup = await DbTagGroup()
+        .select()
+        .system
+        .equals(true)
+        .and
+        .athletesId
+        .equals(athlete.id)
+        .and
+        .name
+        .equals('Auto Heart Rate Max Zone')
+        .toSingle();
+    if (dbTagGroup != null) {
+      return TagGroup._fromDb(dbTagGroup);
+    } else {
+      final TagGroup autoMaxHeartRateTagGroup = TagGroup.by(
+        name: 'Auto Heart Rate Max Zone',
+        athlete: athlete,
+        system: true,
+        color: MyColor.grapeFruit.value,
+      );
+      await autoMaxHeartRateTagGroup._db.save();
+      return autoMaxHeartRateTagGroup;
+    }
+  }
+
+  static Future<TagGroup> autoSportTagGroup({@required Athlete athlete}) async {
+    final DbTagGroup dbTagGroup = await DbTagGroup()
+        .select()
+        .system
+        .equals(true)
+        .and
+        .athletesId
+        .equals(athlete.id)
+        .and
+        .name
+        .equals('Auto Sport/Activity')
+        .toSingle();
+    if (dbTagGroup != null) {
+      //await TagGroup._fromDb(dbTagGroup)._db.delete();
+      return TagGroup._fromDb(dbTagGroup);
+    } else {
+      final TagGroup autoSportTagGroup = TagGroup.by(
+        name: 'Auto Sport/Activity',
+        athlete: athlete,
+        system: true,
+        color: MyColor.sunFlowerAccent.value,
+      );
+      await autoSportTagGroup._db.save();
+      return autoSportTagGroup;
+    }
+  }
+
   static Future<List<TagGroup>> includingActivityTaggings({
     @required Athlete athlete,
     @required Activity activity,
@@ -175,24 +256,32 @@ class TagGroup {
     return tagGroups;
   }
 
-  static Future<List<TagGroup>> allByAthlete({Athlete athlete}) async
-  {
-    final List<DbTagGroup> dbTagGroups = await DbTagGroup()
-        .select()
-        .athletesId
-        .equals(athlete.id)
-        .toList();
+  static Future<List<TagGroup>> allByAthlete({Athlete athlete}) async {
+    final List<DbTagGroup> dbTagGroups =
+        await DbTagGroup().select().athletesId.equals(athlete.id).toList();
     return dbTagGroups.map(TagGroup.exDb).toList();
   }
 
   static Future<void> deleteAllAutoTags({Athlete athlete}) async {
+    final TagGroup autoHeartRateTagGroup =
+        await TagGroup.autoHeartRateTagGroup(athlete: athlete);
+    await autoHeartRateTagGroup._db.getDbTags().delete();
+
+    final TagGroup autoMaxHeartRateTagGroup =
+        await TagGroup.autoMaxHeartRateTagGroup(athlete: athlete);
+    await autoMaxHeartRateTagGroup._db.getDbTags().delete();
+
     final TagGroup autoPowerTagGroup =
         await TagGroup.autoPowerTagGroup(athlete: athlete);
     await autoPowerTagGroup._db.getDbTags().delete();
 
-    final TagGroup autoHeartRateTagGroup =
-        await TagGroup.autoHeartRateTagGroup(athlete: athlete);
-    await autoHeartRateTagGroup._db.getDbTags().delete();
+    final TagGroup autoMaxPowerTagGroup =
+        await TagGroup.autoMaxPowerTagGroup(athlete: athlete);
+    await autoMaxPowerTagGroup._db.getDbTags().delete();
+
+    final TagGroup autoSportTagGroup =
+        await TagGroup.autoSportTagGroup(athlete: athlete);
+    await autoSportTagGroup._db.getDbTags().delete();
   }
 
   static TagGroup exDb(DbTagGroup db) => TagGroup._fromDb(db);

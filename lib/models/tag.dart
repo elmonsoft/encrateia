@@ -57,6 +57,7 @@ class Tag {
           .toList();
       final List<Tag> tags =
           dbTags.map(Tag.exDb).toList();
+      //tags.forEach((element) {element.delete();});
       return tags;
     } else {
       return <Tag>[];
@@ -127,6 +128,99 @@ class Tag {
       await dbHeartRateTag.save();
     }
     return Tag._fromDb(dbHeartRateTag);
+  }
+
+  static Future<Tag> autoSportTag({
+    @required Athlete athlete,
+    @required String name,
+    @required int sortOrder,
+    @required int color,
+  }) async {
+    DbTag dbSportTag;
+
+    final TagGroup autoSportTagGroup =
+    await TagGroup.autoSportTagGroup(athlete: athlete);
+    dbSportTag = await DbTag()
+        .select()
+        .tagGroupsId
+        .equals(autoSportTagGroup.id)
+        .and
+        .name
+        .equals(name)
+        .toSingle();
+
+    if (dbSportTag == null) {
+      dbSportTag = DbTag()
+        ..tagGroupsId = autoSportTagGroup.id
+        ..color = color
+        ..sortOrder = sortOrder
+        ..name = name
+        ..system = true;
+      await dbSportTag.save();
+    }
+    return Tag._fromDb(dbSportTag);
+  }
+
+  static Future<Tag> autoMaxPowerTag({
+    @required Athlete athlete,
+    @required String name,
+    @required int sortOrder,
+    @required int color,
+  }) async {
+    DbTag dbMaxPowerTag;
+
+    final TagGroup autoMaxPowerTagGroup =
+    await TagGroup.autoMaxPowerTagGroup(athlete: athlete);
+    dbMaxPowerTag = await DbTag()
+        .select()
+        .tagGroupsId
+        .equals(autoMaxPowerTagGroup.id)
+        .and
+        .name
+        .equals(name)
+        .toSingle();
+
+    if (dbMaxPowerTag == null) {
+      dbMaxPowerTag = DbTag()
+        ..tagGroupsId = autoMaxPowerTagGroup.id
+        ..color = color
+        ..sortOrder = sortOrder
+        ..name = name
+        ..system = true;
+      await dbMaxPowerTag.save();
+    }
+    return Tag._fromDb(dbMaxPowerTag);
+  }
+
+  static Future<Tag> autoMaxHeartRateTag({
+    @required Athlete athlete,
+    @required String name,
+    @required int sortOrder,
+    @required int color,
+  }) async {
+    DbTag dbMaxHeartRateTag;
+
+    final TagGroup autoMaxHeartRateTagGroup =
+    await TagGroup.autoMaxHeartRateTagGroup(athlete: athlete);
+    dbMaxHeartRateTag = await DbTag()
+        .select()
+        .tagGroupsId
+        .equals(autoMaxHeartRateTagGroup.id)
+        .and
+        .name
+        .equals(name)
+        .toSingle();
+
+    if (dbMaxHeartRateTag == null) {
+      dbMaxHeartRateTag = DbTag()
+        ..tagGroupsId = autoMaxHeartRateTagGroup.id
+        ..color = color
+        ..sortOrder = sortOrder
+        ..name = name
+        ..system = true;
+      await dbMaxHeartRateTag.save();
+    }
+    return Tag._fromDb(dbMaxHeartRateTag);
   }
 
   static Tag exDb(DbTag db) => Tag._fromDb(db);

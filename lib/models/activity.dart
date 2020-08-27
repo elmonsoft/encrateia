@@ -1,11 +1,13 @@
 import 'dart:developer';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:encrateia/model/model.dart'
     show DbActivity, DbEvent, DbHeartRateZone, DbInterval, DbLap, DbPowerZone;
 import 'package:encrateia/secrets/secrets.dart';
 import 'package:encrateia/utils/date_time_utils.dart';
 import 'package:encrateia/utils/enums.dart';
+import 'package:encrateia/utils/my_color.dart';
 import 'package:fit_parser/fit_parser.dart';
 // ignore: implementation_imports
 import 'package:fit_parser/src/value.dart';
@@ -676,6 +678,47 @@ class Activity {
   }
 
   Future<void> autoTagger({@required Athlete athlete}) async {
+    final HeartRateZone heartRateZone = await this.heartRateZone;
+    if (heartRateZone.id != null) {
+      final Tag heartRateTag = await Tag.autoHeartRateTag(
+        athlete: athlete,
+        color: heartRateZone.color,
+        sortOrder: heartRateZone.lowerLimit,
+        name: heartRateZone.name,
+      );
+      await ActivityTagging.createBy(
+        activity: this,
+        tag: heartRateTag,
+        system: true,
+      );
+    }
+
+    // auto Max Heart Rate Tag
+    Map<int, HeartRateZone> mapHeartRateZone = {};
+    for (final Lap lap in await laps) {
+      HeartRateZone mheartRateZone = await lap.heartRateZone;
+      try {
+        mapHeartRateZone[int.parse(mheartRateZone.lowerLimit.toString())] = mheartRateZone;
+      } catch (e) {
+        //print(e.toString());
+      }
+    }
+
+    if (mapHeartRateZone.length > 0) {
+      final int maxLowerLimit = mapHeartRateZone.keys.reduce(max);
+      final Tag maxHeartRateTag = await Tag.autoMaxHeartRateTag(
+        athlete: athlete,
+        color: mapHeartRateZone[maxLowerLimit].color,
+        sortOrder: mapHeartRateZone[maxLowerLimit].lowerLimit,
+        name: mapHeartRateZone[maxLowerLimit].name,
+      );
+      await ActivityTagging.createBy(
+        activity: this,
+        tag: maxHeartRateTag,
+        system: true,
+      );
+    }
+
     final PowerZone powerZone = await this.powerZone;
     if (powerZone.id != null) {
       final Tag powerTag = await Tag.autoPowerTag(
@@ -691,17 +734,52 @@ class Activity {
       );
     }
 
-    final HeartRateZone heartRateZone = await this.heartRateZone;
-    if (heartRateZone.id != null) {
-      final Tag heartRateTag = await Tag.autoHeartRateTag(
+    // auto Max Power Tag
+    Map<int, PowerZone> mapPowerZone = {};
+    for (final Lap lap in await laps) {
+      PowerZone mpowerZone = await lap.powerZone;
+      try {
+        mapPowerZone[int.parse(mpowerZone.lowerLimit.toString())] = mpowerZone;
+      } catch (e) {
+        //print(e.toString());
+      }
+    }
+
+    if (mapPowerZone.length > 0) {
+      final int maxLowerLimit = mapPowerZone.keys.reduce(max);
+      final Tag maxPowerTag = await Tag.autoMaxPowerTag(
         athlete: athlete,
-        color: heartRateZone.color,
-        sortOrder: heartRateZone.lowerLimit,
-        name: heartRateZone.name,
+        color: mapPowerZone[maxLowerLimit].color,
+        sortOrder: mapPowerZone[maxLowerLimit].lowerLimit,
+        name: mapPowerZone[maxLowerLimit].name,
       );
       await ActivityTagging.createBy(
         activity: this,
-        tag: heartRateTag,
+        tag: maxPowerTag,
+        system: true,
+      );
+    }
+
+    // auto Sport Tag
+    String sportName = _db.sportName;
+    // nicht druckbare Zeichen entfernen
+    for (var i = 0; i < sportName.length; i++) {
+      if (sportName.codeUnitAt(i) == 0) {
+        sportName = sportName.substring(0, i);
+        break;
+      }
+    }
+
+    if (sportName != null) {
+      final Tag sportTag = await Tag.autoSportTag(
+        athlete: athlete,
+        color: MyColor.sunFlower.value,
+        sortOrder: sportName.codeUnitAt(0),
+        name: sportName,
+      );
+      await ActivityTagging.createBy(
+        activity: this,
+        tag: sportTag,
         system: true,
       );
     }

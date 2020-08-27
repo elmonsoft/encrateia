@@ -186,6 +186,9 @@ class _ActivitiesFeedWidgetState extends State<ActivitiesFeedWidget> {
   String capitals(Tag tag) {
     final String capitals =
         tagGroup(tag).name.split(' ').map((String word) => word[0]).join();
+    if (tagGroup(tag).name.contains('Max')) {
+      return capitals.substring(1, min(capitals.length, 2)) + 'm';
+    }
     return capitals.substring(0, min(capitals.length, 2));
   }
 }

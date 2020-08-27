@@ -1,10 +1,12 @@
 import 'package:encrateia/screens/onboarding_screens/onboarding_create_user.dart';
 import 'package:encrateia/utils/my_color.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:encrateia/models/athlete.dart';
 import 'package:encrateia/utils/icon_utils.dart';
 import 'package:package_info/package_info.dart';
+import 'package:sqlite_viewer/sqlite_viewer.dart';
 import 'onboarding_screens/onboarding_introduction_screen.dart';
 import 'show_athlete_screen.dart';
 
@@ -62,6 +64,18 @@ class _DashboardState extends State<Dashboard> {
                     },
                   ),
                 ),
+              if (kDebugMode) IconButton(
+                  icon: const Icon(Icons.folder),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute<BuildContext>(
+                        builder: (BuildContext context) =>
+                            DatabaseList(),
+                      ),
+                    );
+                  }
+              ),
               const SizedBox(height: 20),
               if (version != null)
                 Text(
