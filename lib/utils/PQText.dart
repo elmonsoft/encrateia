@@ -122,6 +122,7 @@ try{
       case PQ.power:
       case PQ.speed:
       case PQ.verticalOscillation:
+      case PQ.ecor:
         return value != null && value != -1;
       case PQ.heartRate:
         return value != null && value != 255 && value != -1;

@@ -31,6 +31,7 @@ import 'power_zone_schema.dart';
 import 'record_list.dart';
 import 'strava_fit_download.dart';
 import 'tag.dart';
+import 'weight.dart';
 
 class Activity {
   Activity();
@@ -62,7 +63,8 @@ class Activity {
   List<encrateia.Interval> cachedIntervals = <encrateia.Interval>[];
   List<Tag> cachedTags = <Tag>[];
   double glidingMeasureAttribute;
-  double weight;
+  double cachedWeight;
+  double cachedEcor;
   PowerZoneSchema _powerZoneSchema;
   PowerZone _powerZone;
   HeartRateZone _heartRateZone;
@@ -144,15 +146,6 @@ class Activity {
   int get totalTrainingEffect => _db.totalTrainingEffect;
 
   // calculated from other attributes:
-  double get ecor {
-    if (powerAvailable &&
-        speedAvailable && weightAvailable
-        )
-      return avgPower / avgSpeed / weight;
-    else
-      return null;
-  }
-
   double get avgPace {
     if (avgSpeed != null && avgSpeed != 0)
       return 50 / 3 / avgSpeed;
@@ -187,15 +180,17 @@ class Activity {
   bool get ascentAvailable => totalAscent != null && totalDescent != null;
   bool get cadenceAvailable => !<num>[null, -1].contains(avgStrydCadence);
   bool get speedAvailable => !<num>[null, 0, -1].contains(avgSpeed);
-  bool get weightAvailable => !<num>[null, 0].contains(weight);
   bool get paceAvailable => !<num>[null, -1].contains(avgPace);
-  bool get ecorAvailable => !<num>[null, -1].contains(ecor);
+  bool get ecorAvailable => powerAvailable && speedAvailable;
   bool get groundTimeAvailable => !<num>[null, -1].contains(avgGroundTime);
   bool get formPowerAvailable => !<num>[null, -1].contains(avgFormPower);
-  bool get verticalOscillationAvailable => !<num>[null, -1].contains(avgVerticalOscillation);
+  bool get verticalOscillationAvailable =>
+      !<num>[null, -1].contains(avgVerticalOscillation);
   bool get strideRatioAvailable => !<num>[null, -1].contains(avgStrideRatio);
-  bool get strideCadenceAvailable => !<num>[null, -1].contains(avgDoubleStrydCadence);
-  bool get legSpringStiffnessAvailable => !<num>[null, -1].contains(avgLegSpringStiffness);
+  bool get strideCadenceAvailable =>
+      !<num>[null, -1].contains(avgDoubleStrydCadence);
+  bool get legSpringStiffnessAvailable =>
+      !<num>[null, -1].contains(avgLegSpringStiffness);
 
   set maxHeartRate(int value) => _db.maxHeartRate = value;
   set name(String value) => _db.name = value;
@@ -218,7 +213,7 @@ class Activity {
       case ActivityAttr.avgPower:
         return avgPower;
       case ActivityAttr.ecor:
-        return ecor;
+        return cachedEcor;
       case ActivityAttr.avgPowerPerHeartRate:
         return avgPowerPerHeartRate;
       case ActivityAttr.avgSpeedPerHeartRate:
@@ -307,6 +302,27 @@ class Activity {
       cachedTags = await Tag.allByActivity(activity: this);
     }
     return cachedTags;
+  }
+
+  Future<double> get weight async {
+    if (cachedWeight == null) {
+      final Weight weight = await Weight.getBy(
+        athletesId: athletesId,
+        date: timeCreated,
+      );
+      cachedWeight = weight.value;
+    }
+    return cachedWeight;
+  }
+
+  Future<double> get ecor async {
+    if (cachedEcor == null) {
+      final double weightValue = await weight;
+      cachedEcor = (powerAvailable && speedAvailable && weightValue != null)
+          ? avgPower / avgSpeed / weightValue
+          : -1;
+    }
+    return cachedEcor;
   }
 
   Future<bool> setAverages() async {

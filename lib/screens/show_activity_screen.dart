@@ -547,11 +547,7 @@ class _ShowActivityScreenState extends State<ShowActivityScreen> {
 
   Future<void> getData() async {
     await widget.activity.laps;
-    weight = await Weight.getBy(
-      athletesId: widget.athlete.id,
-      date: widget.activity.timeCreated,
-    );
-    widget.activity.weight = weight.value;
+    await widget.activity.weight;
     setState(() {});
   }
 }
