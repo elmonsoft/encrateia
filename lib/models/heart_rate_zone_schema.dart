@@ -15,6 +15,22 @@ class HeartRateZoneSchema {
   }
   HeartRateZoneSchema._fromDb(this._db);
 
+  HeartRateZoneSchema.likeSeiler({Athlete athlete}) {
+    _db = DbHeartRateZoneSchema()
+      ..athletesId = athlete.id
+      ..name = 'max HR based'
+      ..date = DateTime.now()
+      ..base = 202;
+  }
+
+  HeartRateZoneSchema.likeMarquardt({Athlete athlete}) {
+    _db = DbHeartRateZoneSchema()
+      ..athletesId = athlete.id
+      ..name = 'max HR based'
+      ..date = DateTime.now()
+      ..base = 202;
+  }
+
   HeartRateZoneSchema.likeGarmin({Athlete athlete}) {
     _db = DbHeartRateZoneSchema()
       ..athletesId = athlete.id
@@ -49,6 +65,82 @@ class HeartRateZoneSchema {
     final List<HeartRateZone> heartRateZones =
         dbHeartRateZoneList.map(HeartRateZone.exDb).toList();
     return heartRateZones;
+  }
+
+  Future<void> addSeilerZones() async {
+    await HeartRateZone(
+      heartRateZoneSchema: this,
+      name: 'Z1',
+      lowerPercentage: 60,
+      upperPercentage: 72,
+      color: Colors.grey.value,
+    ).save();
+    await HeartRateZone(
+      heartRateZoneSchema: this,
+      name: 'Z2',
+      lowerPercentage: 72,
+      upperPercentage: 82,
+      color: Colors.blue.value,
+    ).save();
+    await HeartRateZone(
+      heartRateZoneSchema: this,
+      name: 'Z3',
+      lowerPercentage: 82,
+      upperPercentage: 88,
+      color: Colors.green.value,
+    ).save();
+    await HeartRateZone(
+      heartRateZoneSchema: this,
+      name: 'Z4',
+      lowerPercentage: 88,
+      upperPercentage: 93,
+      color: Colors.orange.value,
+    ).save();
+    await HeartRateZone(
+      heartRateZoneSchema: this,
+      name: 'Z5',
+      lowerPercentage: 93,
+      upperPercentage: 100,
+      color: Colors.red.value,
+    ).save();
+  }
+
+  Future<void> addMarquardtZones() async {
+    await HeartRateZone(
+      heartRateZoneSchema: this,
+      name: 'REKOM',
+      lowerPercentage: 56,
+      upperPercentage: 65,
+      color: Colors.grey.value,
+    ).save();
+    await HeartRateZone(
+      heartRateZoneSchema: this,
+      name: 'GA1',
+      lowerPercentage: 65,
+      upperPercentage: 75,
+      color: Colors.blue.value,
+    ).save();
+    await HeartRateZone(
+      heartRateZoneSchema: this,
+      name: 'GA1/2',
+      lowerPercentage: 75,
+      upperPercentage: 85,
+      color: Colors.green.value,
+    ).save();
+    await HeartRateZone(
+      heartRateZoneSchema: this,
+      name: 'GA2',
+      lowerPercentage: 85,
+      upperPercentage: 95,
+      color: Colors.orange.value,
+    ).save();
+    await HeartRateZone(
+      heartRateZoneSchema: this,
+      name: 'WSA',
+      lowerPercentage: 95,
+      upperPercentage: 100,
+      color: Colors.red.value,
+    ).save();
   }
 
   Future<void> addGarminZones() async {

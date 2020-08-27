@@ -194,6 +194,15 @@ You could also create a schema from scratch.
     await getData();
   }
 
+  Future<void> likeStrydZx() async {
+    final Athlete athlete = widget.athlete;
+    final PowerZoneSchema powerZoneSchema =
+    PowerZoneSchema.likeStrydZx(athlete: athlete);
+    await powerZoneSchema.save();
+    await powerZoneSchema.addStrydZxZones();
+    await getData();
+  }
+
   Future<void> likeJimVance() async {
     final Athlete athlete = widget.athlete;
     final PowerZoneSchema powerZoneSchema =
@@ -221,6 +230,12 @@ You could also create a schema from scratch.
         color: Colors.orange,
         child: const Text('like Stryd'),
         onPressed: () => likeStryd(),
+      ),
+      RaisedButton(
+        // MyIcon.downloadLocal,
+        color: Colors.orange,
+        child: const Text('like Stryd Zx'),
+        onPressed: () => likeStrydZx(),
       ),
       RaisedButton(
         // MyIcon.downloadLocal,

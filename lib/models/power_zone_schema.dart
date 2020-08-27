@@ -22,6 +22,14 @@ class PowerZoneSchema {
       ..base = 250;
   }
 
+  PowerZoneSchema.likeStrydZx({Athlete athlete}) {
+    _db = DbPowerZoneSchema()
+      ..athletesId = athlete.id
+      ..name = 'CP based'
+      ..date = DateTime.now()
+      ..base = 250;
+  }
+
   // https://www.velopress.com/jim-vances-running-power-zones/
   PowerZoneSchema.likeJimVance({Athlete athlete}) {
     _db = DbPowerZoneSchema()
@@ -92,6 +100,44 @@ class PowerZoneSchema {
     await PowerZone(
       powerZoneSchema: this,
       name: 'Repetition',
+      lowerPercentage: 115,
+      upperPercentage: 130,
+      color: Colors.red.value,
+    ).save();
+  }
+
+  Future<void> addStrydZxZones() async {
+    await PowerZone(
+      powerZoneSchema: this,
+      name: 'Z1',
+      lowerPercentage: 65,
+      upperPercentage: 80,
+      color: Colors.lightGreen.value,
+    ).save();
+    await PowerZone(
+      powerZoneSchema: this,
+      name: 'Z2',
+      lowerPercentage: 80,
+      upperPercentage: 90,
+      color: Colors.lightBlue.value,
+    ).save();
+    await PowerZone(
+      powerZoneSchema: this,
+      name: 'Z3',
+      lowerPercentage: 90,
+      upperPercentage: 100,
+      color: Colors.yellow.value,
+    ).save();
+    await PowerZone(
+      powerZoneSchema: this,
+      name: 'Z4',
+      lowerPercentage: 100,
+      upperPercentage: 115,
+      color: Colors.orange.value,
+    ).save();
+    await PowerZone(
+      powerZoneSchema: this,
+      name: 'Z5',
       lowerPercentage: 115,
       upperPercentage: 130,
       color: Colors.red.value,

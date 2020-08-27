@@ -192,6 +192,22 @@ You could also create a schema from scratch.
     await getData();
   }
 
+  Future<void> likeSeiler() async {
+    final Athlete athlete = widget.athlete;
+    final HeartRateZoneSchema heartRateZoneSchema = HeartRateZoneSchema.likeSeiler(athlete: athlete);
+    await heartRateZoneSchema.save();
+    await heartRateZoneSchema.addSeilerZones();
+    await getData();
+  }
+
+  Future<void> likeMarquardt() async {
+    final Athlete athlete = widget.athlete;
+    final HeartRateZoneSchema heartRateZoneSchema = HeartRateZoneSchema.likeMarquardt(athlete: athlete);
+    await heartRateZoneSchema.save();
+    await heartRateZoneSchema.addMarquardtZones();
+    await getData();
+  }
+
   Future<void> likeStefanDillinger() async {
     final Athlete athlete = widget.athlete;
     final HeartRateZoneSchema heartRateZoneSchema =
@@ -210,6 +226,18 @@ You could also create a schema from scratch.
         color: Colors.orange,
         child: const Text('like Garmin'),
         onPressed: () => likeGarmin(),
+      ),
+      RaisedButton(
+        // MyIcon.downloadLocal,
+        color: Colors.orange,
+        child: const Text('like Seiler'),
+        onPressed: () => likeSeiler(),
+      ),
+      RaisedButton(
+        // MyIcon.downloadLocal,
+        color: Colors.orange,
+        child: const Text('like Marquardt'),
+        onPressed: () => likeMarquardt(),
       ),
       RaisedButton(
         // MyIcon.downloadLocal,
