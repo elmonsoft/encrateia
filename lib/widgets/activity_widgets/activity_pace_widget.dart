@@ -34,6 +34,10 @@ class _ActivityPaceWidgetState extends State<ActivityPaceWidget> {
 
   @override
   Widget build(BuildContext context) {
+    double maximum = 50 / 3/ widget.activity.minSpeed;
+    double minimum = 50 / 3/ widget.activity.maxSpeed;
+    if (maximum>8) maximum = 8;
+
     if (records.isNotEmpty) {
       final List<Event> paceRecords = records
           .where((Event value) => value.speed != null && value.speed > 0)
@@ -49,10 +53,8 @@ class _ActivityPaceWidgetState extends State<ActivityPaceWidget> {
                 records: RecordList<Event>(paceRecords),
                 activity: widget.activity,
                 athlete: widget.athlete,
-                minimum: 50 / 3 / widget.activity.avgSpeed -
-                    3 * widget.activity.sdevPace,
-                maximum: 50 / 3 / widget.activity.avgSpeed +
-                    3 * widget.activity.sdevPace,
+                minimum: minimum,  // 50 / 3 / widget.activity.avgSpeed -3 * widget.activity.sdevPace,
+                maximum: maximum, // 50 / 3 / widget.activity.avgSpeed + 3 * widget.activity.sdevPace,
               ),
               Text('${widget.athlete.recordAggregationCount} records are '
                   'aggregated into one point in the plot. Only records where '
@@ -62,6 +64,22 @@ class _ActivityPaceWidgetState extends State<ActivityPaceWidget> {
                 leading: MyIcon.average,
                 title: PQText(value: widget.activity.avgPace, pq: PQ.pace),
                 subtitle: const Text('average pace'),
+              ),
+              ListTile(
+                leading: MyIcon.minimum,
+                title: PQText(
+                  value: 50 / 3 / widget.activity.minSpeed,
+                  pq: PQ.pace,
+                ),
+                subtitle: const Text('minimum pace'),
+              ),
+              ListTile(
+                leading: MyIcon.maximum,
+                title: PQText(
+                  value:  50 / 3 / widget.activity.maxSpeed,
+                  pq: PQ.pace,
+                ),
+                subtitle: const Text('maximum pace'),
               ),
               ListTile(
                 leading: MyIcon.standardDeviation,

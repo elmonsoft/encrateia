@@ -17,20 +17,26 @@ class ActivityHeartRateChart extends StatelessWidget {
     @required this.activity,
     @required this.athlete,
     this.heartRateZones,
+    this.minimum,
+    this.maximum
   });
 
   final RecordList<Event> records;
   final Activity activity;
   final Athlete athlete;
   final List<HeartRateZone> heartRateZones;
+  final int minimum;
+  final int maximum;
+
 
   @override
   Widget build(BuildContext context) {
+    final bool hasDisance = activity.distanceAvailable;
     final List<IntPlotPoint> smoothedRecords = records.toIntDataPoints(
       attribute: LapIntAttr.heartRate,
       amount: athlete.recordAggregationCount,
+      hasDisance: activity.distanceAvailable,
     );
-
     final List<Series<IntPlotPoint, int>> data = <Series<IntPlotPoint, int>>[
       Series<IntPlotPoint, int>(
         id: 'Heart Rate',
@@ -40,6 +46,7 @@ class ActivityHeartRateChart extends StatelessWidget {
         data: smoothedRecords,
       )
     ];
+    final int count_points = smoothedRecords[smoothedRecords.length-1].domain;
 
     return FutureBuilder<List<Lap>>(
       future: activity.laps,
@@ -53,9 +60,9 @@ class ActivityHeartRateChart extends StatelessWidget {
                     : 2,
             child: MyLineChart(
               data: data,
-              maxDomain: records.last.distance,
+              maxDomain: hasDisance ? records.last.distance : count_points.toDouble() -500+60,
               laps: laps,
-              heartRateZones: heartRateZones,
+              heartRateZones: hasDisance ? heartRateZones : null,
               domainTitle: 'Heart Rate (bpm)',
               measureTickProviderSpec: const BasicNumericTickProviderSpec(
                   zeroBound: false,
@@ -63,6 +70,9 @@ class ActivityHeartRateChart extends StatelessWidget {
                   desiredTickCount: 6),
               domainTickProviderSpec:
                   const BasicNumericTickProviderSpec(desiredTickCount: 6),
+              measureTitle: hasDisance ? 'Distance (m)' : 'Time (s)',
+              minimum: minimum?.toDouble(),
+              maximum: maximum?.toDouble(),
             ),
           );
         } else
