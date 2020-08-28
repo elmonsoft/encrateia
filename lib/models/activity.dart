@@ -174,6 +174,7 @@ class Activity {
       cadenceAvailable ? avgStrydCadence * 2 : null;
 
   // easier check for data availability
+  bool get distanceAvailable => !<num>[null, -1, 0.0].contains(distance);
   bool get powerAvailable => !<num>[null, -1].contains(avgPower);
   bool get powerRatioAvailable => !<num>[null, -1].contains(avgPowerRatio);
   bool get heartRateAvailable => !<num>[null, -1].contains(avgHeartRate);

@@ -55,6 +55,8 @@ class _ActivityHeartRateWidgetState extends State<ActivityHeartRateWidget> {
                 activity: widget.activity,
                 heartRateZones: heartRateZones,
                 athlete: widget.athlete,
+                minimum: widget.activity.minHeartRate,
+                maximum: widget.activity.maxHeartRate,
               ),
               Text('${widget.athlete.recordAggregationCount} records are '
                   'aggregated into one point in the plot. Only records where '

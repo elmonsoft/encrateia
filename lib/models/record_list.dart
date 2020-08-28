@@ -402,12 +402,17 @@ class RecordList<E> extends DelegatingList<E> {
   List<IntPlotPoint> toIntDataPoints({
     int amount,
     @required LapIntAttr attribute,
+    bool hasDisance = true,
   }) {
     int index = 0;
     final List<IntPlotPoint> plotPoints = <IntPlotPoint>[];
     int sum = 0;
+    int value;
+    DateTime dtStart;
+
 
     for (final Event record in _records) {
+      if (index == 0) {dtStart = record.timeStamp;}
       switch (attribute) {
         case LapIntAttr.power:
           sum += record.power;
@@ -420,8 +425,12 @@ class RecordList<E> extends DelegatingList<E> {
       }
 
       if (index++ % amount == amount - 1) {
+        value = record.distance.round();
+        if (!hasDisance || value==0) {
+          value = record.timeStamp.difference(dtStart).inSeconds;;
+        }
         plotPoints.add(IntPlotPoint(
-          domain: record.distance.round(),
+          domain: value,
           measure: (sum / amount).round(),
         ));
         sum = 0;
