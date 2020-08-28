@@ -206,7 +206,6 @@ class _LapsListExtendWidgetState extends State<LapsListExtendWidget> {
       date: widget.activity.timeCreated,
     );
     weight = _weight.value.toString() ?? '0.0';
-    print(weight);
 
     // Power - FTP
     PowerZoneSchema powerZoneSchema = await PowerZoneSchema.getBy(
