@@ -64,15 +64,14 @@ class _ActivitiesFeedWidgetState extends State<ActivitiesFeedWidget> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
                     Column(children: <Widget>[
+
                       PQText(
                         pq: PQ.dateTime,
                         value: activity.timeCreated,
-                        format: DateTimeFormat.shortDate,
+                        format: DateTimeFormat.shortDateTime,
                       ),
                       PQText(
-                        pq: PQ.distance,
-                        value: activity.totalDistance,
-                      ),
+                          pq: PQ.duration, value: activity.totalTimerTime),
                     ]),
                     const SizedBox(width: 20),
                     Column(children: <Widget>[
@@ -80,7 +79,9 @@ class _ActivitiesFeedWidgetState extends State<ActivitiesFeedWidget> {
                           pq: paceOrSpeed(sport: activity.sport),
                           value: activity.avgSpeed),
                       PQText(
-                          pq: PQ.movingTime, value: activity.movingDuration())
+                        pq: PQ.distance,
+                        value: activity.totalDistance,
+                      ),
                     ]),
                     const SizedBox(width: 20),
                     Column(

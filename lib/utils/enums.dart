@@ -75,5 +75,4 @@ enum PQ {
   trainingEffect,
   verticalOscillation,
   weight,
-  movingTime,
 }

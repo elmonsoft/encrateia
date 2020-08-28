@@ -87,8 +87,6 @@ try{
         return Text((value as num).toStringAsPrecision(3) + ' kN/m');
       case PQ.double:
         return Text((value as double).toStringAsPrecision(3));
-      case PQ.movingTime:
-        return Text(value.toString().substring(0,7));
     }
 }catch(e){
   print('$pq -> {e.toString()}');
