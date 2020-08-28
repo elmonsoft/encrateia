@@ -27,6 +27,7 @@ class _LapsListExtendWidgetState extends State<LapsListExtendWidget> {
   String powerFTP;
   String heartRateBase;
   String paceFTP;
+  String weight;
 
   @override
   void initState() {
@@ -96,7 +97,7 @@ class _LapsListExtendWidgetState extends State<LapsListExtendWidget> {
                 ],
                 rows: laps.map((Lap lap) {
                   try {
-                    lap.lm.weight = widget.activity.weight.toString();
+                    lap.lm.weight = weight;
                   } catch (e) {}
                   try {
                     lap.lm.FTPw = powerFTP;
@@ -200,11 +201,12 @@ class _LapsListExtendWidgetState extends State<LapsListExtendWidget> {
 
   Future<void> getDataFTP() async {
     // Weight
-    final Weight weight = await Weight.getBy(
+    final Weight _weight = await Weight.getBy(
       athletesId: widget.athlete.id,
       date: widget.activity.timeCreated,
     );
-    widget.activity.cachedWeight = weight.value ?? 0.0;
+    weight = _weight.value.toString() ?? '0.0';
+    print(weight);
 
     // Power - FTP
     PowerZoneSchema powerZoneSchema = await PowerZoneSchema.getBy(
@@ -221,7 +223,7 @@ class _LapsListExtendWidgetState extends State<LapsListExtendWidget> {
     );
     heartRateBase = heartRateZoneSchema.base.toString() ?? '';
 
-    double dweight = await widget.activity.weight;
+    //double dweight = await widget.activity.weight;
     //print('Base: $dweight kg / $powerFTP Watt / $heartRateBase bpm ');
 
     // pace FTP
